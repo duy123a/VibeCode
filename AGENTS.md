@@ -1,205 +1,110 @@
 # AGENTS.md
 
-This file contains guidelines for agentic coding agents working in the VibeCode repository.
+## Project Overview
 
-## Project Structure
-- Solution: VibeCode.IdentityServer (OpenIddict) + VibeCode.Main (MVC) + VibeCode.Shared
-- VibeCode.Shared contains shared entities, interfaces, DTOs, validation, resources
-- Main and IdentityServer both reference Shared
-- Architecture: Clean Architecture with layered approach
-- Use existing patterns, avoid introducing new ones unless necessary
-- Infrastructure folder in Shared/Repositories for EF Core repository implementations
+VibeCode is a .NET 9.0 template project implementing a Clean Architecture with OpenIddict authentication and page-based authorization.
 
-## Build Commands
-- `dotnet clean && dotnet build` - Clean and build entire solution
-- `dotnet clean <Project> && dotnet build <Project>` - Clean/build specific project
-- `dotnet clean && dotnet build --configuration Release` - Release build
-- `dotnet run --project VibeCode.IdentityServer` - Run IdentityServer
-- `dotnet run --project VibeCode.Main` - Run Main app
+### Purpose
+- Template/training ground for future ASP.NET Core projects
+- Demonstrates both simple login (Identity) and OAuth 2.0 with PKCE (OpenIddict) approaches
+- Provides reusable patterns for authentication, authorization, and data access
 
-## Testing Commands
-- `dotnet test` - Run all tests (NUnit + Moq)
-- `dotnet test --filter "FullyQualifiedName~ClassName"` - Run single test class
-- `dotnet test --filter "FullyQualifiedName~ClassName.MethodName"` - Run single test method
-- Prefer unit tests over integration tests
-- Use Moq for mocking dependencies in unit tests
-- Focus on testing business logic in services, not controllers
+### Tech Stack
+- .NET 9.0 (target framework)
+- ASP.NET Core MVC (Main app)
+- OpenIddict + ASP.NET Core Identity (IdentityServer)
+- Entity Framework Core + SQL Server
+- Repository pattern + Unit of Work
+- Policy-based authorization
 
-## Database Commands
-- SQL Server as database provider
-- `dotnet ef migrations add <Name> --project <WebProject>` - Create migration
-- `dotnet ef migrations script` - Generate SQL script
-- `dotnet ef migrations add <Name> --startup-project <WebProject>` - Create from web project
-- **CRITICAL: Do NOT apply migrations (dotnet ef database update) unless explicitly requested**
-- SQL scripts must be reviewed before execution
-- Migrations stored in IdentityServer project (AuthDbContext) and Main project (VibeCodeDbContext)
+### Project Structure
+```
+VibeCode.IdentityServer/    - Auth server (OpenIddict + Identity)
+VibeCode.Main/             - MVC client application
+VibeCode.Shared/            - Shared entities, interfaces, DTOs, validation, resources
+```
 
-## C# Code Style
-- .NET 9.0 target framework
-- Nullable reference types: enabled
-- Implicit usings: enabled
-- PascalCase for public members, camelCase for private fields/params
-- _underscore prefix for private fields, use `var` when obvious
-- `this.` qualifier allowed
+**Key Directories:**
+- `Shared/Entities` - Domain models (AppUser, AppRole, Page, Permission, ISoftDeletable, IAuditable)
+- `Shared/Interfaces` - IRepository, IService, IUnitOfWork
+- `Shared/Repositories` - EF Core repository implementations
+- `Shared/Models` - DTOs, ViewModels
+- `Shared/Validation` - Custom validation attributes
+- `Shared/Resources` - Multi-language resource files
 
-## Data Access Patterns
-- Repository pattern: interfaces in Shared/Interfaces, impls in Infrastructure
-- UnitOfWork for transaction management
-- Methods: GetAsync, GetAllAsync, AddAsync, UpdateAsync, DeleteAsync
-- UnitOfWork.CommitAsync() for saving changes
-- DbContext scoped per HTTP request
-- IQueryable for complex queries, IEnumerable for materialized
-- SQL Server as primary database
+---
 
-## MVC Conventions
-- Controllers inherit from `Controller`, actions return IActionResult
-- Views: Views/{Controller}/{Action}.cshtml
-- Models as DTOs/ViewModels in Models folder
-- Dependency injection via constructor
-- Validate using ModelState and Data Annotations
-- Use [HttpGet], [HttpPost] attributes
+## Essential Commands
 
-## Model Validation
-- Data Annotations: [Required], [StringLength], [EmailAddress], [Range]
-- ModelState.IsValid in controllers for validation checks
-- Return BadRequest(ModelState) or View with errors
-- Create custom validation attributes in Shared/Validation
-- Display names/messages from shared resource files
+### Build
+```bash
+dotnet clean && dotnet build                    # Build entire solution
+dotnet clean <Project> && dotnet build <Project>    # Build specific project
+dotnet clean && dotnet build --configuration Release    # Release build
+dotnet run --project VibeCode.IdentityServer       # Run IdentityServer
+dotnet run --project VibeCode.Main                # Run Main app
+```
 
-## Input Handling
-- TrimmingModelBinder auto-trims all string inputs
-- Configure: builder.Services.AddControllersWithViews(o => o.AddStringTrimModelBinderProvider())
-- All string inputs trimmed before binding
-- Prevents leading/trailing whitespace issues
+### Test
+```bash
+dotnet test                                    # Run all tests
+dotnet test --filter "FullyQualifiedName~ClassName"     # Run single test class
+dotnet test --filter "FullyQualifiedName~ClassName.MethodName"  # Run single method
+```
 
-## Localization & Resources
-- Single shared resource: SharedResource.resx, SharedResource.en.resx, SharedResource.vn.resx
-- Place in Shared/Resources or Properties/SharedResource
-- IStringLocalizer<SharedResource> in controllers, IHtmlLocalizer<SharedResource> in views
-- Usage: _localizer["Key"], @localizer["Key"]
-- Configure in Program.cs: AddLocalization(), UseRequestLocalization()
+### Database (IdentityServer)
+```bash
+dotnet ef migrations add <Name> --project VibeCode.IdentityServer --startup-project VibeCode.IdentityServer
+dotnet ef migrations script --project VibeCode.IdentityServer
+```
 
-## Shared Project
-- VibeCode.Shared: entities, DTOs, interfaces, helpers, validation, resources
-- Shared/Entities: domain models (POCOs) including AppUser, AppRole, Page, Permission, ISoftDeletable, IAuditable
-- Shared/Interfaces: IRepository, IService, IUnitOfWork
-- Shared/Repositories: Repository implementations for EF Core
-- Shared/Models: DTOs, ViewModels
-- Shared/Validation: custom validation attributes
-- Shared/Resources: resource files for multi-language
+### Database (Main)
+```bash
+dotnet ef migrations add <Name> --project VibeCode.Main --startup-project VibeCode.Main
+dotnet ef migrations script --project VibeCode.Main
+```
 
-## OpenIddict Integration
-- AddOpenIddict() in Program.cs
-- Use AuthorizationCodeFlow for OAuth 2.0 / OpenID Connect
-- Enable PKCE (RequireProofKeyForCodeExchange())
-- Configure authorization, token, logout endpoints
-- AddAuthorization() for policies
-- AddAuthentication() with OpenIddict scheme
-- Register OpenIddict client for Main app
-- [Authorize] on protected controllers
-- Store tokens in database using OpenIddict entities
+**CRITICAL:** Never run `dotnet ef database update` without explicit approval. Review SQL scripts before execution.
 
-## Page-Based Authorization
-- Pages stored in database (Page entity: Id, Name, Route, Controller, Action)
-- Permissions saved per page (Permission entity: Id, UserId/RoleId, PageId, CanAccess)
-- Authorization checks user permissions against requested page route
-- Admin role bypasses permission checks automatically
-- Policy-based authorization: [Authorize(Policy = "PageAccess")]
-- Implement IAuthorizationHandler for page permission checks
-- Page permissions loaded and cached on user login as claims
-- Use user claims for page access: User.HasClaim("page_permission", "PageName")
-- Authorize attribute on controllers/actions: [Authorize(Policy = "PageAccess")]
+---
 
-## CORS Configuration
-- AddCors() in Program.cs
-- Define allowed origins for Main app and other clients
-- app.UseCors() before UseAuthorization in middleware
-- WithOrigins("http://localhost:5001").AllowCredentials()
-- Allow specific methods, headers as needed
-- Restrict CORS in production
+## Architecture Decisions
 
-## Naming Conventions
-- Controllers: *Controller, Views: *.cshtml matching actions
-- Models: *ViewModel, *Model, *Dto
-- Interfaces: I*, Repositories: I*Repository, *Repository
-- Services: I*Service, *Service
-- Async methods: *Async (GetUserAsync)
-- Resource classes: SharedResource
+- **Separate DbContexts:** AuthDbContext (IdentityServer) for auth, VibeCodeDbContext (Main) for business data
+- **Shared Entities:** Both projects reference Shared for AppUser, AppRole, Page, Permission
+- **Login Options:** Two approaches supported - see docs/permission-system-design.md:1
+- **Admin Bypass:** Admin role automatically skips permission checks
+- **Permission Caching:** Page permissions stored as claims, loaded on login
+- **Repository Pattern:** Interfaces in Shared, implementations in Shared/Repositories
 
-## Error Handling & Logging
-- Global exception: app.UseExceptionHandler()
-- Return Problem() or BadRequest() with details
-- ILogger<T> for logging, Activity.Current?.Id for correlation
-- Throw domain exceptions: NotFoundException
-- Log with resource-localized messages
+---
 
-## Dependency Injection
-- Register services in Program.cs with builder.Services
-- Scoped for services/repositories, Singleton for stateless
-- Transient for lightweight services
-- Prefer constructor injection
+## Additional Documentation
 
-## Security
-- Validate via ModelState, [ValidateAntiForgeryToken] on POST
-- HTTPS: app.UseHttpsRedirection()
-- Never log sensitive data
-- Secure cookies, proper AuthN/AuthZ
-- Page-based authorization for access control
+| Documentation | Purpose |
+|---------------|-----------|
+| docs/architectural_patterns.md | Dependency injection, authorization patterns, data access conventions |
+| docs/dbcontext-architecture.md | Separate DbContexts strategy, migration patterns |
+| docs/permission-system-design.md | Page-based authorization, claims caching, Admin bypass logic |
+| docs/code-samples/ | Reference implementations for Identity, OpenIddict, and common patterns |
 
-## Async Patterns
-- async/await for all I/O operations
-- Never async void (use async Task)
-- ConfigureAwait(false) in libraries/services
-- Avoid .Result/.Wait()
+---
 
-## Background Tasks
-- Long-running tasks (email sending, file processing) run in background
-- Create new DI scope: using var scope = _serviceProvider.CreateScope()
-- Execute in background: Task.Run(async () => { ... })
-- Resolve services from new scope: scope.ServiceProvider.GetRequiredService<T>()
-- Do NOT block main thread - use Task.Run or fire-and-forget
-- Handle exceptions with try/catch and log errors
-- Use IHostedService/BackgroundService for recurring tasks
-- Example: _ = Task.Run(async () => { using var scope = ...; var mailer = scope.ServiceProvider...; await mailer.SendAsync(); })
+## Quick Reference
 
-## Entity Framework
-- EF Core with SQL Server
-- IdentityServer: AuthDbContext (AppUser, AppRole, OpenIddict entities)
-- Main: VibeCodeDbContext (business entities)
-- Repositories in Shared/Repositories (interfaces + implementations)
-- dotnet ef migrations add <Name>
-- Include() for eager loading, disable lazy loading
-- AsNoTracking() for read-only queries
-- UnitOfWork for transactions
+- **Authentication** - docs/code-samples/openiddict/
+- **Authorization** - docs/permission-system-design.md:59
+- **DbContexts** - docs/dbcontext-architecture.md:7
+- **DI Patterns** - docs/architectural_patterns.md:1
+- **Input Handling** - docs/architectural_patterns.md:144
 
-## Service Layer
-- Services handle business logic, interfaces for testability
-- Injected into controllers, work with repos via UnitOfWork
-- Async throughout, return DTOs not entities
-- Services in Application or Services folder
+---
 
-## Unit Testing Guidelines
-- Use NUnit for test framework
-- Use Moq for mocking dependencies (repositories, services)
-- Prefer unit tests over integration tests
-- Test service layer logic, not controller logic
-- Mock all external dependencies (DB, HTTP, File I/O)
-- Test happy path and edge cases
-- Use [Test], [TestCase] attributes for tests
-- Assert with NUnit assertions: Assert.AreEqual, Assert.IsTrue
-- Arrange-Act-Assert pattern for test structure
+## Implementation Notes
 
-## Custom Data Annotations
-- Custom attributes in Shared/Validation
-- Inherit ValidationAttribute or implement IModelValidator
-- Use IStringLocalizer for error messages
-- Examples: [CustomEmail], [StrongPassword], [UniqueUsername]
-- Register for reuse
-
-## Code Organization
-- Keep controllers thin - delegate to services
-- Business logic in services, data access in repositories
-- Entities as POCOs in Shared, add behavior to entities
-- Avoid anemic domain models
-- Keep views simple - use helpers/partials
-- Main references Shared, IdentityServer references Shared
+- Main and IdentityServer reference Shared (no circular dependency)
+- IdentityServer migrations use `AuthDbContext` (auth + OpenIddict tables)
+- Main app migrations use `VibeCodeDbContext` (business entities)
+- Use `User.HasClaim("page_permission", "PageName")` for authorization checks
+- Admin role bypasses all permission checks automatically
+- Permission changes require user re-login for claims refresh
