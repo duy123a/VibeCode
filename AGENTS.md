@@ -85,7 +85,7 @@ dotnet ef migrations script --project VibeCode.Main
 |---------------|-----------|
 | docs/architectural_patterns.md | Dependency injection, authorization patterns, data access conventions |
 | docs/dbcontext-architecture.md | Separate DbContexts strategy, migration patterns |
-| docs/permission-system-design.md | Page-based authorization, claims caching, Admin bypass logic |
+| docs/permission-system-design-future.md | Future implementation: Page-based authorization, claims caching, Admin bypass logic |
 | docs/code-samples/ | Reference implementations for Identity, OpenIddict, and common patterns |
 
 ---
@@ -93,7 +93,7 @@ dotnet ef migrations script --project VibeCode.Main
 ## Quick Reference
 
 - **Authentication** - docs/code-samples/openiddict/
-- **Authorization** - docs/permission-system-design.md:59
+- **Authorization** - Current: Role-based via `[Authorize(Roles = "Admin")]`; Future: docs/permission-system-design-future.md:59
 - **DbContexts** - docs/dbcontext-architecture.md:7
 - **DI Patterns** - docs/architectural_patterns.md:1
 - **Input Handling** - docs/architectural_patterns.md:144
@@ -105,6 +105,6 @@ dotnet ef migrations script --project VibeCode.Main
 - Main and IdentityServer reference Shared (no circular dependency)
 - IdentityServer migrations use `AuthDbContext` (auth + OpenIddict tables)
 - Main app migrations use `VibeCodeDbContext` (business entities)
-- Use `User.HasClaim("page_permission", "PageName")` for authorization checks
-- Admin role bypasses all permission checks automatically
-- Permission changes require user re-login for claims refresh
+- OAuth 2.0 with PKCE flow implemented (auto-approve without consent screen)
+- Front-channel signout coordinates logout across IdentityServer and Main app
+- Role-based authorization available (use `[Authorize(Roles = "Admin")]`)

@@ -54,5 +54,4 @@ builder.Services.AddOpenIddict()
         opt.UseAspNetCore();
     });
 
-// Seed demo clients
 builder.Services.AddHostedService<DatabaseSeedWorker>();

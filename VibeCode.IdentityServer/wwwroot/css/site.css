@@ -1,3 +1,5 @@
+@import url('_variables.css');
+
 html {
   font-size: 14px;
 }
@@ -9,7 +11,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--color-primary);
 }
 
 html {
@@ -18,14 +20,27 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin: 0;
+  background-color: var(--color-light);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
+  color: var(--color-secondary);
   text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.card {
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.navbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.alert {
+  border-radius: var(--border-radius);
 }

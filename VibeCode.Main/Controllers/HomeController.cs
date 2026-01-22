@@ -1,11 +1,24 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using VibeCode.Main.Models;
 
 namespace VibeCode.Main.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
+    [Authorize(Roles = "Admin")]
+    [Route("debug/claims")]
+    public IActionResult DebugClaims()
+    {
+        var claims = User.Claims
+            .Select(c => new { c.Type, c.Value })
+            .ToList();
+
+        return Json(claims);
+    }
+
     public IActionResult Index()
     {
         return View();

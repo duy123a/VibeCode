@@ -24,35 +24,26 @@
 
 ## Authorization Patterns
 
-### Policy-Based Authorization
+### Role-Based Authorization
 
-Page-based authorization uses ASP.NET Core policy system with custom handlers:
-
-**Implementation:**
-```csharp
-// Requirement: docs/permission-system-design.md:62
-public class PageAccessRequirement : IAuthorizationRequirement { }
-
-// Handler: docs/permission-system-design.md:68
-public class PageAuthorizationHandler : AuthorizationHandler<PageAccessRequirement> { }
-
-// Registration: docs/permission-system-design.md:80
-builder.Services.AddAuthorization(options =>
-    options.AddPolicy("PageAccess", policy =>
-        policy.Requirements.Add(new PageAccessRequirement())));
-```
+Current implementation uses ASP.NET Core built-in role-based authorization:
 
 **Usage:**
 ```csharp
-[Authorize(Policy = "PageAccess")]
+[Authorize(Roles = "Admin")]
+public IActionResult AdminPage()
+{
+    // Only users with Admin role can access
+}
+
+[Authorize]
 public IActionResult SecurePage()
 {
-    // Handler checks User.HasClaim("page_permission", "PageName")
-    // Admin bypasses automatically: docs/permission-system-design.md:70
+    // Any authenticated user can access
 }
 ```
 
-Reference: docs/permission-system-design.md:59
+**Note:** Page-based permission system with claims caching is planned for future implementation. See `docs/permission-system-design-future.md` for design details.
 
 ---
 
@@ -124,20 +115,20 @@ Reference: docs/code-samples/openiddict/login-options/simple-login.cs:1
 
 ## State Management
 
-### Claims-Based Permission Caching
+### Claims-Based Authentication
 
-**Pattern:** Page permissions stored as user claims
+**Pattern:** User claims stored in ID tokens from OpenIddict
 
-**Benefits:**
-- No database queries per request
-- High-performance authorization checks
-- Session-based (no re-querying after login)
+**Current Claims:**
+- Subject (user ID)
+- Name
+- Email
+- Roles
+- Display name
+- Profile image
+- Preferred language
 
-**Trade-offs:**
-- Permission changes require re-login
-- Tokens larger with more claims
-
-**Implementation:** docs/permission-system-design.md:44
+**Note:** Page permission claims system is planned for future implementation. See `docs/permission-system-design-future.md` for design details.
 
 ---
 

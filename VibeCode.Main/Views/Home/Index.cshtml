@@ -1,8 +1,63 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0" style="border-radius: 12px;">
+                <div class="card-body p-5 text-center">
+                    <h1 class="display-4 fw-bold mb-4" style="color: var(--color-primary);">Welcome to VibeCode</h1>
+                    
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <p class="lead mb-4">You are logged in as <strong>@User.Identity.Name</strong></p>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary btn-lg w-100">Go to Privacy Page</a>
+                            </div>
+                            <div class="col-md-6">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-secondary btn-lg w-100">Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="lead mb-4">A .NET 9.0 template project with Clean Architecture and OpenIddict authentication.</p>
+                        
+                        <div class="mb-4">
+                            <div class="row text-start">
+                                <div class="col-md-6 mb-3">
+                                    <h5 class="mb-3">Features</h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">✓ Clean Architecture</li>
+                                        <li class="mb-2">✓ OpenIddict Auth</li>
+                                        <li class="mb-2">✓ Entity Framework Core</li>
+                                        <li class="mb-2">✓ Bootstrap 5 Responsive</li>
+                                        <li class="mb-2">✓ Page-based Authorization</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h5 class="mb-3">Tech Stack</h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">• .NET 9.0</li>
+                                        <li class="mb-2">• ASP.NET Core MVC</li>
+                                        <li class="mb-2">• SQL Server</li>
+                                        <li class="mb-2">• Repository Pattern</li>
+                                        <li class="mb-2">• Unit of Work</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-5">Login to Get Started</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -95,11 +95,13 @@ public async Task<IActionResult> Logout()
 public IActionResult SecurePage()
 {
     // User is authenticated via OpenIddict
-    // Check page permissions from claims
-    if (!User.HasClaim("page_permission", "SecurePage"))
-    {
-        return Forbid();
-    }
+    return View();
+}
 
+// Admin-only page example
+[Authorize(Roles = "Admin")]
+public IActionResult AdminPage()
+{
+    // User is authenticated and has Admin role
     return View();
 }
