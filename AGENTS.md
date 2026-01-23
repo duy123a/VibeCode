@@ -72,7 +72,7 @@ dotnet ef migrations script --project VibeCode.Main
 
 - **Separate DbContexts:** AuthDbContext (IdentityServer) for auth, VibeCodeDbContext (Main) for business data
 - **Shared Entities:** Both projects reference Shared for AppUser, AppRole, Page, Permission
-- **Login Options:** Two approaches supported - see docs/permission-system-design.md:1
+- **Login Options:** Two approaches supported - see docs/code-samples/openiddict/login-options/
 - **Admin Bypass:** Admin role automatically skips permission checks
 - **Permission Caching:** Page permissions stored as claims, loaded on login
 - **Repository Pattern:** Interfaces in Shared, implementations in Shared/Repositories
@@ -108,3 +108,4 @@ dotnet ef migrations script --project VibeCode.Main
 - OAuth 2.0 with PKCE flow implemented (auto-approve without consent screen)
 - Front-channel signout coordinates logout across IdentityServer and Main app
 - Role-based authorization available (use `[Authorize(Roles = "Admin")]`)
+- **Single Type Per File:** Each file should contain only one class, interface, or enum. Do not place multiple types in a single file.
