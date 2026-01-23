@@ -23,12 +23,6 @@ builder.Services.AddDbContext<VibeCodeDbContext>(options =>
 builder.Services.AddAppLocalization();
 builder.Services.AddControllersWithViews();
 
-builder.Services.Configure<CookieSettings>(
-    builder.Configuration.GetSection("CookieSettings"));
-
-builder.Services.Configure<OpenIdConnectSettings>(
-    builder.Configuration.GetSection("OpenIdConnectSettings"));
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -41,6 +35,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.LoginPath = cookieSettings.LoginPath;
         options.LogoutPath = cookieSettings.LogoutPath;
+        options.AccessDeniedPath = cookieSettings.AccessDeniedPath;
         options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
         options.SlidingExpiration = cookieSettings.SlidingExpiration;
     }
