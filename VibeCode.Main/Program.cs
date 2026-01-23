@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using System.Security.Claims;
 using VibeCode.Main.Data;
+using VibeCode.Main.Settings;
 using VibeCode.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,12 @@ builder.Services.AddDbContext<VibeCodeDbContext>(options =>
 builder.Services.AddAppLocalization();
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<CookieSettings>(
+    builder.Configuration.GetSection("CookieSettings"));
+
+builder.Services.Configure<OpenIdConnectSettings>(
+    builder.Configuration.GetSection("OpenIdConnectSettings"));
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -28,52 +36,59 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(options =>
 {
-    options.LoginPath = "/Account/Login";
-    options.LogoutPath = "/Account/Logout";
-    options.ExpireTimeSpan = TimeSpan.FromHours(1);
-    options.SlidingExpiration = true;
+    var cookieSettings = builder.Configuration.GetSection("CookieSettings").Get<CookieSettings>();
+    if (cookieSettings != null)
+    {
+        options.LoginPath = cookieSettings.LoginPath;
+        options.LogoutPath = cookieSettings.LogoutPath;
+        options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
+        options.SlidingExpiration = cookieSettings.SlidingExpiration;
+    }
 })
 .AddOpenIdConnect("OpenIddict", options =>
 {
     options.Authority = builder.Configuration["OpenIddictClients:IdentityServer:BaseUrl"];
     options.ClientId = builder.Configuration["OpenIddictClients:Main:ClientId"];
     options.ClientSecret = builder.Configuration["OpenIddictClients:Main:ClientSecret"];
-    options.ResponseType = "code";
-    options.UsePkce = true;
-    options.SaveTokens = true;
 
-    options.CallbackPath = "/signin-oidc";
-    options.SignedOutCallbackPath = "/signout-callback-oidc";
+    var oidcSettings = builder.Configuration.GetSection("OpenIdConnectSettings").Get<OpenIdConnectSettings>();
+    if (oidcSettings != null)
+    {
+        options.ResponseType = oidcSettings.ResponseType;
+        options.UsePkce = oidcSettings.UsePkce;
+        options.SaveTokens = oidcSettings.SaveTokens;
+        options.CallbackPath = oidcSettings.CallbackPath;
+        options.SignedOutCallbackPath = oidcSettings.SignedOutCallbackPath;
+        options.RequireHttpsMetadata = oidcSettings.RequireHttpsMetadata;
+        options.GetClaimsFromUserInfoEndpoint = oidcSettings.GetClaimsFromUserInfoEndpoint;
+
+        options.Scope.Clear();
+        foreach (var scope in oidcSettings.Scopes)
+        {
+            options.Scope.Add(scope);
+        }
+
+        options.Events = new OpenIdConnectEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                context.HandleResponse();
+                context.Response.Redirect(oidcSettings.FailureRedirectPath);
+                return Task.CompletedTask;
+            },
+            OnRemoteFailure = context =>
+            {
+                context.Response.Redirect(oidcSettings.FailureRedirectPath);
+                context.HandleResponse();
+                return Task.CompletedTask;
+            }
+        };
+    }
+
     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
-    options.RequireHttpsMetadata = false;
-
-    options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-    options.Scope.Add("email");
-    options.Scope.Add("roles");
-
-    options.GetClaimsFromUserInfoEndpoint = false;
 
     options.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
     options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
-
-    options.Events = new OpenIdConnectEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            context.HandleResponse();
-            context.Response.Redirect("/");
-            return Task.CompletedTask;
-        },
-        OnRemoteFailure = context =>
-        {
-            context.Response.Redirect("/");
-            context.HandleResponse();
-            return Task.CompletedTask;
-        }
-    };
 });
 
 builder.Services.AddAuthorization();
