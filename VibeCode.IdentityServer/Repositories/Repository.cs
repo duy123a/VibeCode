@@ -1,15 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using VibeCode.IdentityServer.Data;
 using VibeCode.Shared.Interfaces;
 
-namespace VibeCode.Shared.Repositories;
+namespace VibeCode.IdentityServer.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly DbContext Context;
+    protected readonly AuthDbContext Context;
     protected readonly DbSet<T> DbSet;
 
-    public Repository(DbContext context)
+    public Repository(AuthDbContext context)
     {
         Context = context;
         DbSet = context.Set<T>();

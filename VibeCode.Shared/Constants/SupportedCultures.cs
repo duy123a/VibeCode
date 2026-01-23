@@ -1,4 +1,4 @@
-﻿namespace VibeCode.IdentityServer.Constants
+﻿namespace VibeCode.Shared.Constants
 {
     public static class SupportedCultures
     {

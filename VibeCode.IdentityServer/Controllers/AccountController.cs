@@ -1,7 +1,12 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using VibeCode.IdentityServer.Models;
+using VibeCode.IdentityServer.Settings;
 using VibeCode.Shared.Entities;
+using VibeCode.Shared.Resources;
 
 namespace VibeCode.IdentityServer.Controllers;
 
@@ -10,15 +15,21 @@ public class AccountController : Controller
     private readonly SignInManager<AppUser> _signInManager;
     private readonly UserManager<AppUser> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly IStringLocalizer<SharedResources> _localizer;
+    private readonly CookieSettings _cookieSettings;
 
     public AccountController(
         SignInManager<AppUser> signInManager,
         UserManager<AppUser> userManager,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IStringLocalizer<SharedResources> localizer,
+        IOptions<CookieSettings> cookieSettings)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _configuration = configuration;
+        _localizer = localizer;
+        _cookieSettings = cookieSettings.Value;
     }
 
     [HttpGet]
@@ -48,9 +59,29 @@ public class AccountController : Controller
 
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(string.Empty, _localizer["Login_Failed"]);
             return View(model);
         }
+
+        if (await _userManager.IsLockedOutAsync(user))
+        {
+            ModelState.AddModelError(string.Empty, _localizer["Login_Locked_Out"]);
+            return View(model);
+        }
+
+        if (!await _userManager.IsEmailConfirmedAsync(user))
+        {
+            ModelState.AddModelError(string.Empty, _localizer["Login_Not_Allowed"]);
+            return View(model);
+        }
+
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = model.RememberMe
+                    ? DateTimeOffset.UtcNow.AddDays(_cookieSettings.RememberMeExpireDays)
+                    : DateTimeOffset.UtcNow.AddSeconds(_cookieSettings.DefaultExpireSeconds)
+        };
 
         await _signInManager.SignInAsync(user, model.RememberMe);
 
@@ -68,7 +99,7 @@ public class AccountController : Controller
     {
         await _signInManager.SignOutAsync();
 
-        var clients = _configuration.GetSection("OpenIddictClients:Clients").Get<Dictionary<string, ClientConfig>>() ?? new();
+        var clients = _configuration.GetSection("OpenIddictClients").Get<Dictionary<string, ClientConfig>>() ?? new();
 
         var imgs = string.Join("\n",
             clients.Values

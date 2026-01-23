@@ -1,7 +1,6 @@
 namespace VibeCode.Shared.Interfaces;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork
 {
-    IRepository<T> Repository<T>() where T : class;
-    Task<int> CommitAsync();
+    Task SaveAsync();
 }

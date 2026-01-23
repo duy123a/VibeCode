@@ -1,0 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using VibeCode.Shared.Interfaces;
+
+namespace VibeCode.IdentityServer.UnitOfWorks;
+
+public class UnitOfWork : IUnitOfWork
+{
+    private readonly DbContext _context;
+
+    public UnitOfWork(DbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task SaveAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
+}

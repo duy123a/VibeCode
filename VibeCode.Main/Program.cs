@@ -1,15 +1,24 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
+using System.Security.Claims;
 using VibeCode.Main.Data;
+using VibeCode.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Enable PII logging
+IdentityModelEventSource.ShowPII = true;
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<VibeCodeDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddAppLocalization();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(options =>
@@ -47,8 +56,8 @@ builder.Services.AddAuthentication(options =>
 
     options.GetClaimsFromUserInfoEndpoint = false;
 
-    options.TokenValidationParameters.NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
-    options.TokenValidationParameters.RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+    options.TokenValidationParameters.NameClaimType = ClaimTypes.Name;
+    options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
 
     options.Events = new OpenIdConnectEvents
     {
@@ -78,6 +87,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRequestLocalization();
 app.UseStaticFiles();
 
 app.UseRouting();

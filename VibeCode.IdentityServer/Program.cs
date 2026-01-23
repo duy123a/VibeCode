@@ -2,11 +2,13 @@ using OpenIddict.Abstractions;
 using VibeCode.IdentityServer.Data;
 using VibeCode.IdentityServer.Extensions;
 using VibeCode.IdentityServer.HostedServices;
+using VibeCode.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
+builder.Services.AddAppLocalization();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddOpenIddict()
@@ -58,7 +60,8 @@ builder.Services.AddOpenIddict()
         opt.UseAspNetCore();
     });
 
-builder.Services.AddHostedService<DatabaseSeedWorker>();
+builder.Services.AddHostedService<IdentitySeedWorker>();
+builder.Services.AddHostedService<OpenIddictSeedWorker>();
 
 var app = builder.Build();
 
@@ -69,6 +72,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRequestLocalization();
 app.UseStaticFiles();
 
 app.UseRouting();

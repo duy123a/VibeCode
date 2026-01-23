@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
-using VibeCode.IdentityServer.Constants;
+using VibeCode.Shared.Constants;
 using VibeCode.Shared.Entities;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 

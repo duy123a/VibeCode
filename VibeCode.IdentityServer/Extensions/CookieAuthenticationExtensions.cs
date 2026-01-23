@@ -1,3 +1,5 @@
+using VibeCode.IdentityServer.Settings;
+
 namespace VibeCode.IdentityServer.Extensions;
 
 public static class CookieAuthenticationExtensions
@@ -13,19 +15,11 @@ public static class CookieAuthenticationExtensions
         {
             options.LoginPath = cookieSettings.LoginPath;
             options.LogoutPath = cookieSettings.LogoutPath;
+            options.AccessDeniedPath = cookieSettings.AccessDeniedPath;
             options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
             options.SlidingExpiration = cookieSettings.SlidingExpiration;
         });
 
         return services;
-    }
-
-    public class CookieSettings
-    {
-        public string LoginPath { get; set; } = "/Account/Login";
-        public string LogoutPath { get; set; } = "/Account/Logout";
-        public string AccessDeniedPath { get; set; } = "/Account/AccessDenied";
-        public int DefaultExpireSeconds { get; set; } = 3600;
-        public bool SlidingExpiration { get; set; } = true;
     }
 }

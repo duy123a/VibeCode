@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VibeCode.IdentityServer.Data;
+using VibeCode.IdentityServer.Settings;
 using VibeCode.Shared.Entities;
-using VibeCode.Shared.Interfaces;
-using VibeCode.Shared.Repositories;
 
 namespace VibeCode.IdentityServer.Extensions;
 
@@ -36,8 +35,12 @@ public static class ServiceCollectionExtensions
             options.Lockout.AllowedForNewUsers = true;
         })
         .AddEntityFrameworkStores<AuthDbContext>()
+        .AddErrorDescriber<AppErrorDescriber>()
         .AddDefaultTokenProviders();
 
+        // Ensure the default authentication scheme is the Identity cookie.
+        // This prevents the OpenIddict server handler from being selected for non-OpenIddict endpoints
+        // (e.g. custom APIs like /api/notification/*).
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
@@ -56,8 +59,13 @@ public static class ServiceCollectionExtensions
             options.ValidationInterval = TimeSpan.Zero;
         });
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddAuthorization();
+
+        services.Configure<OpenIddictClientSettings>(
+            configuration.GetSection("OpenIddictClients:Main"));
+
+        services.Configure<SeedUserSettings>(
+            configuration.GetSection("SeedUsers"));
 
         return services;
     }
