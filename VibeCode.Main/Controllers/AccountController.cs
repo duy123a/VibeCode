@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace VibeCode.Main.Controllers;
@@ -28,14 +29,33 @@ public class AccountController : Controller
     {
         try
         {
-            await HttpContext.SignOutAsync("OpenIddict");
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return SignOut(new AuthenticationProperties
+            {
+                RedirectUri = "/"
+            },
+            "OpenIddict", CookieAuthenticationDefaults.AuthenticationScheme);
         }
         catch (Exception)
         {
+            // If logout fails (e.g., S1 unreachable), still sign out locally
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return Redirect("/");
         }
+    }
+
+    [AllowAnonymous]
+    public IActionResult AccessDenied(string returnUrl)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+        return View();
+    }
+
+    // Front-channel logout endpoint.
+    [HttpGet("signout-oidc")]
+    public async Task<IActionResult> SignOutOidc()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        return NoContent();
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using VibeCode.IdentityServer.Data;
 using VibeCode.IdentityServer.Extensions;
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddAppLocalization();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(o => o.AddStringTrimModelBinderProvider());
 
 builder.Services.AddOpenIddict()
     .AddCore(opt =>
@@ -64,6 +65,12 @@ builder.Services.AddHostedService<IdentitySeedWorker>();
 builder.Services.AddHostedService<OpenIddictSeedWorker>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    db.Database.Migrate();
+}
 
 if (!app.Environment.IsDevelopment())
 {

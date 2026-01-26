@@ -105,7 +105,7 @@ public class AccountController : Controller
             clients.Values
                 .Where(c => !string.IsNullOrWhiteSpace(c.BaseUrl))
                 .Select(c =>
-                    $"<img src='{c.BaseUrl.TrimEnd('/')}/signout-oidc' style='display:none;' />"
+                    $"<img src='{c.BaseUrl.TrimEnd('/')}/signout-callback-oidc' style='display:none;' />"
                 )
         );
 

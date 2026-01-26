@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
 using System.Security.Claims;
 using VibeCode.Main.Data;
@@ -21,7 +20,7 @@ builder.Services.AddDbContext<VibeCodeDbContext>(options =>
 });
 
 builder.Services.AddAppLocalization();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(o => o.AddStringTrimModelBinderProvider());
 
 builder.Services.AddAuthentication(options =>
 {
@@ -38,6 +37,10 @@ builder.Services.AddAuthentication(options =>
         options.AccessDeniedPath = cookieSettings.AccessDeniedPath;
         options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
         options.SlidingExpiration = cookieSettings.SlidingExpiration;
+
+        // Allow front channel logout for OpenID Connect
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     }
 })
 .AddOpenIdConnect("OpenIddict", options =>
@@ -89,6 +92,12 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<VibeCodeDbContext>();
+    db.Database.Migrate();
+}
 
 if (!app.Environment.IsDevelopment())
 {
