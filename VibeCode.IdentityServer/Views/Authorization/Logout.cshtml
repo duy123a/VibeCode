@@ -1,0 +1,20 @@
+﻿@using Microsoft.Extensions.Primitives
+
+<div class="container p-5 mb-4 bg-light rounded-3">
+    <h1>Log out</h1>
+    <p class="lead text-left">Are you sure you want to sign out?</p>
+
+    <form id="logoutForm" asp-controller="Authorization" asp-action="Logout" method="post">
+        @foreach (var parameter in Context.Request.HasFormContentType ?
+               (IEnumerable<KeyValuePair<string, StringValues>>)Context.Request.Form : Context.Request.Query)
+        {
+            <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
+        }
+
+        <input class="btn btn-lg btn-success" name="Confirm" type="submit" value="Yes" />
+    </form>
+</div>
+
+<script>
+    document.getElementById('logoutForm').submit();
+</script>

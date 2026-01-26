@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
-using VibeCode.Shared.Constants;
 using VibeCode.Shared.Entities;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -55,14 +54,11 @@ public class AuthorizationController : Controller
 
         // Create claims for OpenIddict token
         var claims = new List<Claim>
-            {
-                new Claim(OpenIddictConstants.Claims.Subject, userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)!),
-                new Claim(OpenIddictConstants.Claims.Name, userPrincipal.Identity?.Name ?? string.Empty),
-                new Claim(OpenIddictConstants.Claims.Email, userPrincipal.FindFirstValue(ClaimTypes.Email) ?? string.Empty),
-                new Claim(AppConstants.PreferredLanguage, userPrincipal.FindFirstValue(AppConstants.PreferredLanguage) ?? SupportedCultures.Default),
-                new Claim(AppConstants.DisplayName, userEntity?.DisplayName ?? string.Empty),
-                new Claim(AppConstants.ProfileImage, userEntity?.ProfileImg ?? string.Empty),
-            };
+        {
+            new Claim(OpenIddictConstants.Claims.Subject, userPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)!),
+            new Claim(OpenIddictConstants.Claims.Name, userPrincipal.Identity?.Name ?? string.Empty),
+            new Claim(OpenIddictConstants.Claims.Email, userPrincipal.FindFirstValue(ClaimTypes.Email) ?? string.Empty)
+        };
 
         // Get roles from Identity user
 
