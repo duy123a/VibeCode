@@ -109,3 +109,4 @@ dotnet ef migrations script --project VibeCode.Main
 - Front-channel signout coordinates logout across IdentityServer and Main app
 - Role-based authorization available (use `[Authorize(Roles = "Admin")]`)
 - **Single Type Per File:** Each file should contain only one class
+- **No Auto Git Operations:** Never automatically add, commit, or push changes. Only perform git operations when explicitly instructed by the user.
