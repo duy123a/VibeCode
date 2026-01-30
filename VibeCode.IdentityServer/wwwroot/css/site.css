@@ -24,6 +24,65 @@ body {
   background-color: var(--color-light);
 }
 
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 70px;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar a {
+  color: var(--sidebar-text);
+  text-decoration: none;
+  padding: 12px 20px;
+  display: block;
+  border-left: 3px solid transparent;
+}
+
+.sidebar a:hover {
+  background-color: var(--sidebar-hover);
+  border-left-color: var(--color-primary);
+}
+
+.sidebar a.active {
+  background-color: var(--sidebar-hover);
+  border-left-color: var(--color-primary);
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  padding-top: 70px;
+  min-height: 100vh;
+}
+
+.top-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+}
+
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--color-secondary);
   text-align: end;
@@ -35,10 +94,6 @@ body {
 
 .card {
   border: 1px solid rgba(0,0,0,0.1);
-}
-
-.navbar {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .alert {
