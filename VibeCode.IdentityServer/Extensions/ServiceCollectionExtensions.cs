@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VibeCode.IdentityServer.Data;
+using VibeCode.IdentityServer.Services;
 using VibeCode.IdentityServer.Settings;
 using VibeCode.Shared.Entities;
 
@@ -58,6 +59,8 @@ public static class ServiceCollectionExtensions
         {
             options.ValidationInterval = TimeSpan.Zero;
         });
+
+        services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, AppUserClaimsPrincipalFactory>();
 
         services.AddAuthorization();
 

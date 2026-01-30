@@ -1,3 +1,5 @@
+@using System.Security.Claims
+
 @{
     ViewData["Title"] = "VibeCode.Main";
 }
@@ -28,19 +30,21 @@
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <li class="nav-item">
-                            <span class="nav-link text-white">Hello, @User.Identity.Name!</span>
+                            <span class="nav-link text-white">
+                                Hello, @(User.FindFirst(AppConstants.DisplayName)?.Value ?? "Guest")!
+                            </span>
                         </li>
                         <li class="nav-item">
                             <form class="d-inline" asp-controller="Account" asp-action="Logout" method="post">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-outline-light btn-sm ms-2">Logout</button>
+                                <button type="submit" class="btn btn-primary btn-sm ms-2">Logout</button>
                             </form>
                         </li>
                     }
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
                     }
                 </ul>
@@ -73,9 +77,9 @@
     <script>
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
-        
+
         if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
+            sidebarToggle.addEventListener('click', function () {
                 sidebar.classList.toggle('show');
             });
         }
