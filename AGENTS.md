@@ -108,4 +108,4 @@ dotnet ef migrations script --project VibeCode.Main
 - OAuth 2.0 with PKCE flow implemented (auto-approve without consent screen)
 - Front-channel signout coordinates logout across IdentityServer and Main app
 - Role-based authorization available (use `[Authorize(Roles = "Admin")]`)
-- **Single Type Per File:** Each file should contain only one class, interface, or enum. Do not place multiple types in a single file.
+- **Single Type Per File:** Each file should contain only one class
