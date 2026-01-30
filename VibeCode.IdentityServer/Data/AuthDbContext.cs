@@ -4,6 +4,7 @@ using OpenIddict.EntityFrameworkCore.Models;
 using System.Reflection;
 using System.Security.Claims;
 using VibeCode.Shared.Entities;
+using VibeCode.Shared.Entities.Auth;
 using VibeCode.Shared.Entities.Interfaces;
 
 namespace VibeCode.IdentityServer.Data;
@@ -20,6 +21,13 @@ public class AuthDbContext : IdentityDbContext<AppUser, AppRole, string>
     public DbSet<OpenIddictEntityFrameworkCoreAuthorization> Authorizations { get; set; }
     public DbSet<OpenIddictEntityFrameworkCoreScope> Scopes { get; set; }
     public DbSet<OpenIddictEntityFrameworkCoreToken> Tokens { get; set; }
+
+    public DbSet<Menu> Menus => Set<Menu>();
+    public DbSet<Permission> Permissions => Set<Permission>();
+
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+    public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
+    public DbSet<MenuPermission> MenuPermissions => Set<MenuPermission>();
 
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -39,7 +47,28 @@ public class AuthDbContext : IdentityDbContext<AppUser, AppRole, string>
             }
         }
 
+        builder.HasDefaultSchema("auth");
+
         builder.UseOpenIddict();
+
+        builder.Entity<RolePermission>()
+            .HasKey(x => new { x.RoleId, x.PermissionId });
+
+        builder.Entity<UserPermission>()
+            .HasKey(x => new { x.UserId, x.PermissionId });
+
+        builder.Entity<MenuPermission>()
+            .HasKey(x => new { x.MenuId, x.PermissionId });
+
+        builder.Entity<Menu>()
+            .HasOne(x => x.Parent)
+            .WithMany(x => x.Children)
+            .HasForeignKey(x => x.ParentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Permission>()
+            .HasIndex(x => x.Code)
+            .IsUnique();
     }
 
     private static void SetSoftDeleteFilter<TEntity>(ModelBuilder builder)

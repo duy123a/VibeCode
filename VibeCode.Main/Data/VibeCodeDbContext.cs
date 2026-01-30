@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Security.Claims;
-using VibeCode.Shared.Entities;
 using VibeCode.Shared.Entities.Interfaces;
 
 namespace VibeCode.Main.Data;
@@ -13,9 +12,6 @@ public class VibeCodeDbContext : DbContext
     {
         _httpContextAccessor = httpContextAccessor;
     }
-
-    public DbSet<Page> Pages { get; set; } = null!;
-    public DbSet<Permission> Permissions { get; set; } = null!;
 
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -34,6 +30,8 @@ public class VibeCodeDbContext : DbContext
                 method.Invoke(null, new object[] { builder });
             }
         }
+
+        builder.HasDefaultSchema("main");
     }
 
     private static void SetSoftDeleteFilter<TEntity>(ModelBuilder builder)
