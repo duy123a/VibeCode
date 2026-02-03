@@ -37,6 +37,30 @@ body {
   z-index: 1000;
 }
 
+.sidebar-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--sidebar-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  display: none;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
 .sidebar a {
   color: var(--sidebar-text);
   text-decoration: none;
@@ -73,13 +97,33 @@ body {
   .sidebar {
     transform: translateX(-100%);
   }
-  
+
   .sidebar.show {
     transform: translateX(0);
   }
-  
+
+  .sidebar.show .sidebar-close {
+    display: block;
+  }
+
+  .sidebar.show ~ .sidebar-overlay {
+    display: block;
+  }
+
+  .sidebar.show ~ .main-content {
+    filter: brightness(0.7);
+  }
+
   .main-content {
     margin-left: 0;
+  }
+
+  .navbar-nav .dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: auto;
+    top: 100%;
+    z-index: 1050;
   }
 }
 

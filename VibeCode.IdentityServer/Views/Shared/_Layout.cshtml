@@ -19,40 +19,34 @@
             <button class="btn btn-dark d-lg-none me-2" type="button" id="sidebarToggle">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">VibeCode</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <li class="nav-item">
-                            <span class="nav-link text-white">
-                                Hello, @(User.FindFirst(AppConstants.DisplayName)?.Value ?? "Guest")!
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <form class="d-inline" asp-controller="Account" asp-action="Logout" method="post">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-primary btn-sm ms-2">Logout</button>
-                            </form>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item">
-                            <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Login">Login</a>
-                        </li>
-                    }
-                </ul>
-            </div>
+            <ul class="navbar-nav ms-auto">
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="~/images/default-avatar.svg" alt="Avatar" width="32" height="32" class="rounded-circle" style="background: white; padding: 4px;">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                }/li>
+                }
+            </ul>
         </div>
     </nav>
 
     @if (ViewData["ShowSidebar"] as bool? != false)
     {
         <div class="sidebar" id="sidebar">
+            <button class="sidebar-close d-lg-none" type="button" id="sidebarClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
             <div class="pt-3">
                 <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-house-door me-2"></i>Home
@@ -61,7 +55,9 @@
         </div>
     }
 
-    <div class="main-content" style="@((ViewData["ShowSidebar"] as bool? == false ? "margin-left: 0;" : ""))">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-content" id="mainContent" style="@((ViewData["ShowSidebar"] as bool? == false ? "margin-left: 0;" : ""))">
         <main role="main" class="p-4">
             @RenderBody()
         </main>
@@ -70,16 +66,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function () {
-                sidebar.classList.toggle('show');
-            });
-        }
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
