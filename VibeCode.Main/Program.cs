@@ -9,8 +9,11 @@ using VibeCode.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Enable PII logging
-IdentityModelEventSource.ShowPII = true;
+// Enable PII logging only in development
+if (builder.Environment.IsDevelopment())
+{
+    IdentityModelEventSource.ShowPII = true;
+}
 
 builder.Services.AddHttpContextAccessor();
 
@@ -113,6 +116,16 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Security headers
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+
+    await next();
+});
 
 app.MapControllerRoute(
     name: "default",

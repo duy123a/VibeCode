@@ -10,12 +10,6 @@ function closeSidebar() {
     }
 }
 
-function openSidebar() {
-    if (sidebar) {
-        sidebar.classList.add('show');
-    }
-}
-
 if (sidebarToggle) {
     sidebarToggle.addEventListener('click', function () {
         if (sidebar) {

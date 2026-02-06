@@ -5,11 +5,9 @@ const sidebarOverlay = document.getElementById('sidebarOverlay');
 const topNavbar = document.querySelector('.top-navbar');
 
 function closeSidebar() {
-    sidebar.classList.remove('show');
-}
-
-function openSidebar() {
-    sidebar.classList.add('show');
+    if (sidebar) {
+        sidebar.classList.remove('show');
+    }
 }
 
 if (sidebarToggle) {

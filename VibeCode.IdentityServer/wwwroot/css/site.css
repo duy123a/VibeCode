@@ -11,7 +11,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--color-primary);
+  box-shadow: 0 0 0 0.1rem var(--color-white), 0 0 0 0.25rem var(--color-primary);
 }
 
 #sidebarToggle:focus {
@@ -149,8 +149,13 @@ body {
   border-radius: var(--border-radius);
 }
 
+.avatar-circle {
+  background: var(--color-white);
+  padding: 4px;
+}
+
 .dropdown-toggle::after {
-  border-top-color: white !important;
+  border-top-color: var(--color-white) !important;
   transition: transform 0.3s ease;
 }
 
