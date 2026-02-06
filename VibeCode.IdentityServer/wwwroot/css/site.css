@@ -14,6 +14,11 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--color-primary);
 }
 
+#sidebarToggle:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 html {
   position: relative;
   min-height: 100%;
@@ -151,4 +156,25 @@ body {
 
 .dropdown-toggle.arrow-up::after {
   transform: rotate(180deg);
+}
+
+@media (min-width: 992px) {
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.collapsed ~ .main-content {
+    margin-left: 0;
+  }
+
+  #sidebarToggle {
+    position: absolute;
+    left: var(--sidebar-width);
+    transition: left 0.3s ease;
+    z-index: 1001;
+  }
+
+  .top-navbar.sidebar-collapsed #sidebarToggle {
+    left: 0;
+  }
 }

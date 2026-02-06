@@ -2,6 +2,7 @@ const sidebar = document.getElementById('sidebar');
 const sidebarToggle = document.getElementById('sidebarToggle');
 const sidebarClose = document.getElementById('sidebarClose');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
+const topNavbar = document.querySelector('.top-navbar');
 
 function closeSidebar() {
     if (sidebar) {
@@ -18,7 +19,14 @@ function openSidebar() {
 if (sidebarToggle) {
     sidebarToggle.addEventListener('click', function () {
         if (sidebar) {
-            sidebar.classList.toggle('show');
+            if (window.innerWidth >= 992) {
+                sidebar.classList.toggle('collapsed');
+                if (topNavbar) {
+                    topNavbar.classList.toggle('sidebar-collapsed');
+                }
+            } else {
+                sidebar.classList.toggle('show');
+            }
         }
     });
 }
