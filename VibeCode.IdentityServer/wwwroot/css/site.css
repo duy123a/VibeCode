@@ -143,3 +143,12 @@ body {
 .alert {
   border-radius: var(--border-radius);
 }
+
+.dropdown-toggle::after {
+  border-top-color: white !important;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-toggle.arrow-up::after {
+  transform: rotate(180deg);
+}

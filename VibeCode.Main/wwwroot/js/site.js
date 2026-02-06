@@ -31,3 +31,13 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+const userDropdown = document.getElementById('userDropdown');
+if (userDropdown) {
+    userDropdown.addEventListener('show.bs.dropdown', function () {
+        this.classList.add('arrow-up');
+    });
+    userDropdown.addEventListener('hidden.bs.dropdown', function () {
+        this.classList.remove('arrow-up');
+    });
+}
+
