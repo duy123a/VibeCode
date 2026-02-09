@@ -8,5 +8,6 @@
         public int DefaultExpireSeconds { get; set; } = 3600;
         public bool SlidingExpiration { get; set; } = true;
         public int RememberMeExpireDays { get; set; } = 14;
+        public string CookiePath { get; set; } = "/";
     }
 }

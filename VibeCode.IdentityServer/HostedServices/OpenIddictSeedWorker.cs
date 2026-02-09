@@ -54,10 +54,10 @@ public sealed class OpenIddictSeedWorker : IHostedService
         };
 
         descriptor.RedirectUris.Add(
-            new Uri($"{_clientOptions.BaseUrl}/signin-oidc"));
+            new Uri($"{_clientOptions.BaseUrl.TrimEnd('/')}/signin-oidc"));
 
         descriptor.PostLogoutRedirectUris.Add(
-            new Uri($"{_clientOptions.BaseUrl}/signout-callback-oidc"));
+            new Uri($"{_clientOptions.BaseUrl.TrimEnd('/')}/signout-callback-oidc"));
 
         await appManager.CreateAsync(descriptor, cancellationToken);
     }

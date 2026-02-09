@@ -18,6 +18,10 @@ public static class CookieAuthenticationExtensions
             options.AccessDeniedPath = cookieSettings.AccessDeniedPath;
             options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
             options.SlidingExpiration = cookieSettings.SlidingExpiration;
+            options.Cookie.Path = cookieSettings.CookiePath;
+
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
 
         return services;
