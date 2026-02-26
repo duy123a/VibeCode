@@ -1,6 +1,6 @@
 ﻿namespace VibeCode.Shared.Entities.Auth
 {
-    public class Permission : BaseEntity
+    public class Permission
     {
         public int Id { get; set; }
 

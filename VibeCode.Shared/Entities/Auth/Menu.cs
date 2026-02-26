@@ -6,7 +6,7 @@
         Identity = 2
     }
 
-    public class Menu : BaseEntity
+    public class Menu
     {
         public int Id { get; set; }
 

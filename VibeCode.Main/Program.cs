@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using System.Security.Claims;
@@ -14,6 +15,16 @@ if (builder.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
 }
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -40,6 +51,7 @@ builder.Services.AddAuthentication(options =>
         options.AccessDeniedPath = cookieSettings.AccessDeniedPath;
         options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
         options.SlidingExpiration = cookieSettings.SlidingExpiration;
+        options.Cookie.Path = cookieSettings.CookiePath;
 
         // Allow front channel logout for OpenID Connect
         options.Cookie.SameSite = SameSiteMode.None;
@@ -108,7 +120,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UsePathBase("/main");
+app.UseForwardedHeaders();
+
 app.UseRequestLocalization();
 app.UseStaticFiles();
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using VibeCode.IdentityServer.Data;
@@ -11,6 +12,16 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddAppLocalization();
 builder.Services.AddControllersWithViews(o => o.AddStringTrimModelBinderProvider());
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 builder.Services.AddOpenIddict()
     .AddCore(opt =>
@@ -27,11 +38,11 @@ builder.Services.AddOpenIddict()
             opt.SetIssuer(new Uri(issuerUrl));
         }
 
-        opt.SetAuthorizationEndpointUris("/connect/authorize")
-           .SetTokenEndpointUris("/connect/token")
-           .SetRevocationEndpointUris("/connect/revoke")
-           .SetUserInfoEndpointUris("/connect/userinfo")
-           .SetEndSessionEndpointUris("/connect/logout");
+        opt.SetAuthorizationEndpointUris("/auth/connect/authorize")
+           .SetTokenEndpointUris("/auth/connect/token")
+           .SetRevocationEndpointUris("/auth/connect/revoke")
+           .SetUserInfoEndpointUris("/auth/connect/userinfo")
+           .SetEndSessionEndpointUris("/auth/connect/logout");
 
         opt.AllowAuthorizationCodeFlow();
 
@@ -78,7 +89,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UsePathBase("/auth");
+app.UseForwardedHeaders();
+
 app.UseRequestLocalization();
 app.UseStaticFiles();
 
