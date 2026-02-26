@@ -5,9 +5,9 @@ using VibeCode.Shared.Entities.Interfaces;
 
 namespace VibeCode.Main.Data;
 
-public class VibeCodeDbContext : DbContext
+public class MainDbContext : DbContext
 {
-    public VibeCodeDbContext(DbContextOptions<VibeCodeDbContext> options, IHttpContextAccessor httpContextAccessor)
+    public MainDbContext(DbContextOptions<MainDbContext> options, IHttpContextAccessor httpContextAccessor)
         : base(options)
     {
         _httpContextAccessor = httpContextAccessor;
@@ -23,7 +23,7 @@ public class VibeCodeDbContext : DbContext
         {
             if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
             {
-                var method = typeof(VibeCodeDbContext)
+                var method = typeof(MainDbContext)
                     .GetMethod(nameof(SetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)!
                     .MakeGenericMethod(entityType.ClrType);
 

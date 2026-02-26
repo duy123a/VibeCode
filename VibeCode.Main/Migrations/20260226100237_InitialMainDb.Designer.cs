@@ -10,9 +10,9 @@ using VibeCode.Main.Data;
 
 namespace VibeCode.Main.Migrations
 {
-    [DbContext(typeof(VibeCodeDbContext))]
-    [Migration("20260130092814_InitialSetup")]
-    partial class InitialSetup
+    [DbContext(typeof(MainDbContext))]
+    [Migration("20260226100237_InitialMainDb")]
+    partial class InitialMainDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

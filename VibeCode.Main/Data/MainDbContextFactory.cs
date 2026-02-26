@@ -3,19 +3,19 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace VibeCode.Main.Data
 {
-    public class VibeCodeDbContextFactory : IDesignTimeDbContextFactory<VibeCodeDbContext>
+    public class MainDbContextFactory : IDesignTimeDbContextFactory<MainDbContext>
     {
-        public VibeCodeDbContext CreateDbContext(string[] args)
+        public MainDbContext CreateDbContext(string[] args)
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var optionsBuilder = new DbContextOptionsBuilder<VibeCodeDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<MainDbContext>();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
-            return new VibeCodeDbContext(optionsBuilder.Options, null!);
+            return new MainDbContext(optionsBuilder.Options, null!);
         }
     }
 }

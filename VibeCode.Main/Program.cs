@@ -28,7 +28,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddDbContext<VibeCodeDbContext>(options =>
+builder.Services.AddDbContext<MainDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -110,7 +110,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<VibeCodeDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<MainDbContext>();
     db.Database.Migrate();
 }
 

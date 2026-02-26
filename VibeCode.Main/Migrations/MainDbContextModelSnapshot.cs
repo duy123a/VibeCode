@@ -9,8 +9,8 @@ using VibeCode.Main.Data;
 
 namespace VibeCode.Main.Migrations
 {
-    [DbContext(typeof(VibeCodeDbContext))]
-    partial class VibeCodeDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MainDbContext))]
+    partial class MainDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

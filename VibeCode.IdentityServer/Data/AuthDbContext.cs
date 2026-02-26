@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OpenIddict.EntityFrameworkCore.Models;
 using System.Reflection;
 using System.Security.Claims;
+using VibeCode.IdentityServer.Data.Configuration;
 using VibeCode.Shared.Entities;
 using VibeCode.Shared.Entities.Auth;
 using VibeCode.Shared.Entities.Interfaces;
@@ -51,24 +52,11 @@ public class AuthDbContext : IdentityDbContext<AppUser, AppRole, string>
 
         builder.UseOpenIddict();
 
-        builder.Entity<RolePermission>()
-            .HasKey(x => new { x.RoleId, x.PermissionId });
-
-        builder.Entity<UserPermission>()
-            .HasKey(x => new { x.UserId, x.PermissionId });
-
-        builder.Entity<MenuPermission>()
-            .HasKey(x => new { x.MenuId, x.PermissionId });
-
-        builder.Entity<Menu>()
-            .HasOne(x => x.Parent)
-            .WithMany(x => x.Children)
-            .HasForeignKey(x => x.ParentId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<Permission>()
-            .HasIndex(x => x.Code)
-            .IsUnique();
+        builder.ApplyConfiguration(new MenuConfiguration());
+        builder.ApplyConfiguration(new PermissionConfiguration());
+        builder.ApplyConfiguration(new RolePermissionConfiguration());
+        builder.ApplyConfiguration(new UserPermissionConfiguration());
+        builder.ApplyConfiguration(new MenuPermissionConfiguration());
     }
 
     private static void SetSoftDeleteFilter<TEntity>(ModelBuilder builder)
