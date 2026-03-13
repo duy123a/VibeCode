@@ -32,9 +32,10 @@ public sealed class IdentitySeedWorker : IHostedService
         await EnsureRoleAsync(roleManager, "Admin");
         await EnsureRoleAsync(roleManager, "User");
 
-        await EnsurePermissionsAsync(context);
-
         await EnsureAdminUserAsync(userManager);
+
+        await EnsureResourcePermissionsAsync(context, "User");
+        await EnsureResourcePermissionsAsync(context, "Role");
     }
 
     private static async Task EnsureRoleAsync(
@@ -49,48 +50,6 @@ public sealed class IdentitySeedWorker : IHostedService
                 NormalizedName = roleName.ToUpper()
             });
         }
-    }
-
-    private static async Task EnsurePermissionsAsync(AuthDbContext context)
-    {
-        var basePermissions = new[]
-        {
-            new Permission
-            {
-                Code = "Read",
-                Name = "Read",
-                Description = "Read permission"
-            },
-            new Permission
-            {
-                Code = "Write",
-                Name = "Write",
-                Description = "Write permission"
-            },
-            new Permission
-            {
-                Code = "Modify",
-                Name = "Modify",
-                Description = "Modify permission"
-            },
-            new Permission
-            {
-                Code = "Delete",
-                Name = "Delete",
-                Description = "Delete permission"
-            }
-        };
-
-        foreach (var permission in basePermissions)
-        {
-            if (!await context.Permissions
-                .AnyAsync(x => x.Code == permission.Code))
-            {
-                context.Permissions.Add(permission);
-            }
-        }
-
-        await context.SaveChangesAsync();
     }
 
     private async Task EnsureAdminUserAsync(
@@ -118,6 +77,30 @@ public sealed class IdentitySeedWorker : IHostedService
         {
             await userManager.AddToRoleAsync(admin, "Admin");
         }
+    }
+
+    private static async Task EnsureResourcePermissionsAsync(
+        AuthDbContext context,
+        string resourceName)
+    {
+        var actions = new[] { "Read", "Write", "Modify", "Delete" };
+
+        foreach (var action in actions)
+        {
+            var code = $"{resourceName}.{action}";
+
+            if (!await context.Permissions.AnyAsync(x => x.Code == code))
+            {
+                context.Permissions.Add(new Permission
+                {
+                    Code = code,
+                    Name = $"{resourceName} {action}",
+                    Description = $"{action} permission for {resourceName}"
+                });
+            }
+        }
+
+        await context.SaveChangesAsync();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

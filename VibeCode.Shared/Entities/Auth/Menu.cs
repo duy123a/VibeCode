@@ -22,7 +22,5 @@
 
         public int DisplayOrder { get; set; }
         public bool IsActive { get; set; } = true;
-
-        public ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>();
     }
 }

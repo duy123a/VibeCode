@@ -21,10 +21,6 @@ namespace VibeCode.IdentityServer.Data.Configuration
                 .WithMany(x => x.Children)
                 .HasForeignKey(x => x.ParentId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(x => x.MenuPermissions)
-                .WithOne(x => x.Menu)
-                .HasForeignKey(x => x.MenuId);
         }
     }
 }

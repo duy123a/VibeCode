@@ -28,7 +28,6 @@ public class AuthDbContext : IdentityDbContext<AppUser, AppRole, string>
 
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
-    public DbSet<MenuPermission> MenuPermissions => Set<MenuPermission>();
 
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -56,7 +55,6 @@ public class AuthDbContext : IdentityDbContext<AppUser, AppRole, string>
         builder.ApplyConfiguration(new PermissionConfiguration());
         builder.ApplyConfiguration(new RolePermissionConfiguration());
         builder.ApplyConfiguration(new UserPermissionConfiguration());
-        builder.ApplyConfiguration(new MenuPermissionConfiguration());
     }
 
     private static void SetSoftDeleteFilter<TEntity>(ModelBuilder builder)
