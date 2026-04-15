@@ -9,12 +9,13 @@
     public class Menu
     {
         public int Id { get; set; }
-
         public string Name { get; set; } = null!;
-        public string? Url { get; set; } // Controller/Action or route
+        public string? Url { get; set; }
         public MenuTargetApp TargetApp { get; set; }
-
         public string? Icon { get; set; }
+
+        // The Link: This matches Permission.Code
+        public string? RequiredPermissionCode { get; set; }
 
         public int? ParentId { get; set; }
         public Menu? Parent { get; set; }

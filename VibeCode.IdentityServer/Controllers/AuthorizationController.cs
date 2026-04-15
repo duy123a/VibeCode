@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 using System.Security.Claims;
+using VibeCode.IdentityServer.Services.Interface;
 using VibeCode.Shared.Constants;
 using VibeCode.Shared.Entities;
 using static OpenIddict.Abstractions.OpenIddictConstants;
@@ -16,13 +17,16 @@ public class AuthorizationController : Controller
 {
     private readonly SignInManager<AppUser> _signInManager;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IPermissionService _permissionService;
 
     public AuthorizationController(
         SignInManager<AppUser> signInManager,
-        UserManager<AppUser> userManager)
+        UserManager<AppUser> userManager,
+        IPermissionService permissionService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _permissionService = permissionService;
     }
 
     [HttpGet("~/connect/authorize")]
@@ -63,16 +67,21 @@ public class AuthorizationController : Controller
         };
 
         // Get roles from Identity user
-
         if (!string.IsNullOrEmpty(userId))
         {
-
             if (userEntity != null)
             {
                 var roles = await _userManager.GetRolesAsync(userEntity);
                 foreach (var role in roles ?? Enumerable.Empty<string>())
                     claims.Add(new Claim(OpenIddictConstants.Claims.Role, role));
             }
+        }
+
+        // Fetch and add permissions as claims
+        var permissions = await _permissionService.GetPermissionsAsync(userId);
+        foreach (var permission in permissions)
+        {
+            claims.Add(new Claim(AppConstants.Permission, permission));
         }
 
         // Create identity + principal

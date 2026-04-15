@@ -36,6 +36,7 @@ public sealed class IdentitySeedWorker : IHostedService
 
         await EnsureResourcePermissionsAsync(context, "User");
         await EnsureResourcePermissionsAsync(context, "Role");
+        await EnsureResourcePermissionsAsync(context, "Privacy");
     }
 
     private static async Task EnsureRoleAsync(
