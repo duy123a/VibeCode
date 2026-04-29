@@ -113,7 +113,7 @@ public class AccountController : Controller
             <html><body>
                 {imgs}
                 <script>
-                    setTimeout(() => window.location='/Account/Login', 500);
+                    setTimeout(() => window.location='{_cookieSettings.LoginPath}', 500);
                 </script>
             </body></html>";
 
