@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -93,6 +94,7 @@ public class AccountController : Controller
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
+    // Front-channel logout endpoint.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
@@ -105,7 +107,7 @@ public class AccountController : Controller
             clients.Values
                 .Where(c => !string.IsNullOrWhiteSpace(c.BaseUrl))
                 .Select(c =>
-                    $"<img src='{c.BaseUrl.TrimEnd('/')}/signout-callback-oidc' style='display:none;' />"
+                    $"<img src='{c.BaseUrl.TrimEnd('/')}/signout-oidc' style='display:none;' />"
                 )
         );
 
@@ -120,6 +122,13 @@ public class AccountController : Controller
         Response.Headers["Cache-Control"] = "no-store";
 
         return Content(html, "text/html");
+    }
+
+    [AllowAnonymous]
+    public IActionResult AccessDenied(string returnUrl)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+        return View();
     }
 
     public class ClientConfig

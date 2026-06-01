@@ -45,20 +45,23 @@
         </div>
     </nav>
 
-    <div class="sidebar" id="sidebar">
-        <button class="sidebar-close d-lg-none" type="button" id="sidebarClose">
-            <i class="bi bi-x-lg"></i>
-        </button>
-        <div class="pt-3">
-            <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
-                <i class="bi bi-house-door me-2"></i>Home
-            </a>
+    @if (ViewData["ShowSidebar"] as bool? != false)
+    {
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-close d-lg-none" type="button" id="sidebarClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <div class="pt-3">
+                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door me-2"></i>Home
+                </a>
+            </div>
         </div>
-    </div>
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    }
 
-    <div class="main-content" id="mainContent">
+    <div class="main-content" id="mainContent" style="@((ViewData["ShowSidebar"] as bool? == false ? "margin-left: 0;" : ""))">
         <main role="main" class="p-4">
             @RenderBody()
         </main>

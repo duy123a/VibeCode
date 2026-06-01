@@ -66,15 +66,11 @@ public class AuthorizationController : Controller
             new Claim(AppConstants.DisplayName, userEntity?.DisplayName ?? string.Empty),
         };
 
-        // Get roles from Identity user
-        if (!string.IsNullOrEmpty(userId))
+        // Get roles from User Principal claims to avoid unnecessary database queries
+        var roles = userPrincipal.FindAll(ClaimTypes.Role).Select(c => c.Value);
+        foreach (var role in roles)
         {
-            if (userEntity != null)
-            {
-                var roles = await _userManager.GetRolesAsync(userEntity);
-                foreach (var role in roles ?? Enumerable.Empty<string>())
-                    claims.Add(new Claim(OpenIddictConstants.Claims.Role, role));
-            }
+            claims.Add(new Claim(OpenIddictConstants.Claims.Role, role));
         }
 
         // Fetch and add permissions as claims
@@ -154,11 +150,7 @@ public class AuthorizationController : Controller
     [HttpGet("~/connect/userinfo")]
     public async Task<IActionResult> Userinfo()
     {
-        var authResult = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-        var principal = authResult.Principal;
-
-        if (principal == null)
-            return Unauthorized();
+        var principal = User;
 
         var roles = principal.FindAll(OpenIddictConstants.Claims.Role).Select(c => c.Value).ToArray();
 

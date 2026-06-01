@@ -1,24 +1,10 @@
-@inject IStringLocalizer<SharedResources> Localizer
 @using VibeCode.Shared.Resources
 @using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> Localizer
 
-@model ErrorViewModel
 @{
-    ViewData["Title"] = $"Error {Model.StatusCode}";
-
-    var iconClass = "bi-exclamation-triangle-fill text-danger";
-    var badgeBg = "bg-danger-subtle text-danger";
-
-    if (Model.StatusCode == 404)
-    {
-        iconClass = "bi-question-circle-fill text-warning";
-        badgeBg = "bg-warning-subtle text-warning";
-    }
-    else if (Model.StatusCode == 403 || Model.StatusCode == 401)
-    {
-        iconClass = "bi-shield-lock-fill text-danger";
-        badgeBg = "bg-danger-subtle text-danger";
-    }
+    ViewData["Title"] = Localizer["AccessDenied_Title"];
+    var returnUrl = ViewData["ReturnUrl"] as string;
 }
 
 <div class="container">
@@ -27,27 +13,31 @@
             <div class="card shadow-lg border-0" style="border-radius: 16px; overflow: hidden; background: var(--color-white);">
                 <div class="card-body p-5 text-center">
                     <div class="mb-4">
-                        <i class="bi @iconClass" style="font-size: 4.5rem; filter: var(--drop-shadow);"></i>
+                        <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4.5rem; filter: var(--drop-shadow);"></i>
                     </div>
-
-                    <span class="badge rounded-pill px-3 py-2 mb-3 fw-semibold @badgeBg" style="font-size: 1rem; border: 1px solid currentColor;">
-                        Status Code: @Model.StatusCode
-                    </span>
-
-                    <h1 class="display-5 fw-bold mb-3" style="color: var(--color-dark);">@Localizer["Error_Title"]</h1>
-
+                    
+                    <h1 class="display-5 fw-bold mb-3" style="color: var(--color-dark);">@Localizer["AccessDenied_Heading"]</h1>
+                    
                     <p class="lead mb-4 text-secondary" style="font-size: 1.15rem; font-weight: 400;">
-                        @Model.Message
+                        @Localizer["AccessDenied_Message"]
                     </p>
-
+                    
+                    @if (!string.IsNullOrWhiteSpace(returnUrl))
+                    {
+                        <div class="alert alert-light border mb-4 text-start p-3" style="border-radius: var(--border-radius); font-size: 0.95rem; background-color: var(--color-light);">
+                            <span class="fw-semibold text-dark d-block mb-1">@Localizer["AccessDenied_UrlLabel"]</span>
+                            <code class="text-break text-danger">@returnUrl</code>
+                        </div>
+                    }
+                    
                     <hr class="my-4 text-muted opacity-25">
-
+                    
                     <div class="d-flex justify-content-center gap-3">
                         <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg px-4" style="border-radius: var(--border-radius); font-size: 1rem;">
                             <i class="bi bi-arrow-left me-2"></i>@Localizer["Button_GoBack"]
                         </a>
                         <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg px-4" style="background: var(--color-primary); border: none; border-radius: var(--border-radius); font-size: 1rem;">
-                            <i class="bi bi-house-door me-2"></i>@Localizer["Back_To_Home"]
+                            <i class="bi bi-house-door me-2"></i>@Localizer["Button_Home"]
                         </a>
                     </div>
                 </div>
@@ -55,4 +45,3 @@
         </div>
     </div>
 </div>
-

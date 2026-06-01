@@ -11,7 +11,7 @@ using VibeCode.Main.Data;
 namespace VibeCode.Main.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20260429032544_InitialCreate")]
+    [Migration("20260601044059_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

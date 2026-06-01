@@ -1,3 +1,7 @@
+@using VibeCode.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> Localizer
+
 @model LoginViewModel
 @{
     ViewData["Title"] = "Log in";
@@ -7,33 +11,28 @@
 <div class="d-flex align-items-center justify-content-center" style="min-height: 100vh; background: var(--color-light);">
     <div class="card shadow-lg border-0" style="width: 100%; max-width: 400px; border-radius: 12px;">
         <div class="card-body p-5">
-            <div class="text-center mb-4">
-                <h3 class="fw-bold" style="color: var(--color-primary);">VibeCode</h3>
-                <p class="text-muted">Sign in to continue</p>
-            </div>
-
             <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                 <div class="mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="Enter your email" autocomplete="username" />
+                    <label asp-for="Email" class="form-label">@Localizer["Email"]</label>
+                    <input asp-for="Email" class="form-control" placeholder="@Localizer["Email"]" autocomplete="username" />
                     <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password</label>
-                    <input asp-for="Password" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
+                    <label asp-for="Password" class="form-label">@Localizer["Password"]</label>
+                    <input asp-for="Password" class="form-control" placeholder="@Localizer["Password"]" autocomplete="current-password" />
                     <span asp-validation-for="Password" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3 form-check">
                     <input asp-for="RememberMe" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+                    <label asp-for="RememberMe" class="form-check-label"></label>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2" style="background: var(--color-primary); border: none;">Sign In</button>
+                <button type="submit" class="btn btn-primary w-100 py-2" style="background: var(--color-primary); border: none;">@Localizer["Button_Login_Submit"]</button>
             </form>
         </div>
     </div>

@@ -12,7 +12,7 @@ using VibeCode.IdentityServer.Data;
 namespace VibeCode.IdentityServer.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20260429032531_InitialCreate")]
+    [Migration("20260601044042_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

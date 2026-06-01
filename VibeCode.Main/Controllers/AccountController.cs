@@ -25,22 +25,13 @@ public class AccountController : Controller
             "OpenIddict");
     }
 
-    public async Task<IActionResult> Logout()
+    public IActionResult Logout()
     {
-        try
+        return SignOut(new AuthenticationProperties
         {
-            return SignOut(new AuthenticationProperties
-            {
-                RedirectUri = "/"
-            },
-            "OpenIddict", CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-        catch (Exception)
-        {
-            // If logout fails (e.g., S1 unreachable), still sign out locally
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/");
-        }
+            RedirectUri = "/"
+        },
+        "OpenIddict", CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
     [AllowAnonymous]

@@ -59,5 +59,356 @@ namespace VibeCode.Shared.Resources {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access Denied.
+        /// </summary>
+        public static string AccessDenied_Heading {
+            get {
+                return ResourceManager.GetString("AccessDenied_Heading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You do not have permission to access this page..
+        /// </summary>
+        public static string AccessDenied_Message {
+            get {
+                return ResourceManager.GetString("AccessDenied_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access Denied.
+        /// </summary>
+        public static string AccessDenied_Title {
+            get {
+                return ResourceManager.GetString("AccessDenied_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempted URL:.
+        /// </summary>
+        public static string AccessDenied_UrlLabel {
+            get {
+                return ResourceManager.GetString("AccessDenied_UrlLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to home.
+        /// </summary>
+        public static string Back_To_Home {
+            get {
+                return ResourceManager.GetString("Back_To_Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change password.
+        /// </summary>
+        public static string Button_Change_Password {
+            get {
+                return ResourceManager.GetString("Button_Change_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go back.
+        /// </summary>
+        public static string Button_GoBack {
+            get {
+                return ResourceManager.GetString("Button_GoBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string Button_Home {
+            get {
+                return ResourceManager.GetString("Button_Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string Button_Login_Submit {
+            get {
+                return ResourceManager.GetString("Button_Login_Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string Button_Logout {
+            get {
+                return ResourceManager.GetString("Button_Logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy policy.
+        /// </summary>
+        public static string Button_Privacy {
+            get {
+                return ResourceManager.GetString("Button_Privacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dashboards.
+        /// </summary>
+        public static string Dashboards {
+            get {
+                return ResourceManager.GetString("Dashboards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t have an account?.
+        /// </summary>
+        public static string Dont_Have_Account {
+            get {
+                return ResourceManager.GetString("Dont_Have_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The username is already taken..
+        /// </summary>
+        public static string Duplicate_User_Name {
+            get {
+                return ResourceManager.GetString("Duplicate_User_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid email address..
+        /// </summary>
+        public static string Email_Invalid {
+            get {
+                return ResourceManager.GetString("Email_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oops! Something went wrong.
+        /// </summary>
+        public static string Error_Title {
+            get {
+                return ResourceManager.GetString("Error_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forget password.
+        /// </summary>
+        public static string Forget_Password {
+            get {
+                return ResourceManager.GetString("Forget_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid or expired token..
+        /// </summary>
+        public static string Invalid_Token {
+            get {
+                return ResourceManager.GetString("Invalid_Token", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string Login {
+            get {
+                return ResourceManager.GetString("Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two-factor authentication required.
+        /// </summary>
+        public static string Login_2FA_Required {
+            get {
+                return ResourceManager.GetString("Login_2FA_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email address or password you entered is incorrect..
+        /// </summary>
+        public static string Login_Failed {
+            get {
+                return ResourceManager.GetString("Login_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your account is locked out.
+        /// </summary>
+        public static string Login_Locked_Out {
+            get {
+                return ResourceManager.GetString("Login_Locked_Out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to confirm your email before logging in..
+        /// </summary>
+        public static string Login_Not_Allowed {
+            get {
+                return ResourceManager.GetString("Login_Not_Allowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login successful.
+        /// </summary>
+        public static string Login_Success {
+            get {
+                return ResourceManager.GetString("Login_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout confirmation.
+        /// </summary>
+        public static string Logout_Confirmation {
+            get {
+                return ResourceManager.GetString("Logout_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you want to logout?.
+        /// </summary>
+        public static string Logout_Confirmation_Content {
+            get {
+                return ResourceManager.GetString("Logout_Confirmation_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no new notifications..
+        /// </summary>
+        public static string NoNotifications {
+            get {
+                return ResourceManager.GetString("NoNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string Notifications {
+            get {
+                return ResourceManager.GetString("Notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must be at least {0} characters long..
+        /// </summary>
+        public static string Password_Length_Invalid {
+            get {
+                return ResourceManager.GetString("Password_Length_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must contain uppercase, lowercase, digits, and special characters..
+        /// </summary>
+        public static string Password_Requires_Combine {
+            get {
+                return ResourceManager.GetString("Password_Requires_Combine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must contain at least {0} unique characters..
+        /// </summary>
+        public static string Password_Requires_Unique_Chars {
+            get {
+                return ResourceManager.GetString("Password_Requires_Unique_Chars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this page to detail your site&apos;s privacy policy..
+        /// </summary>
+        public static string Privacy_Message {
+            get {
+                return ResourceManager.GetString("Privacy_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy policy.
+        /// </summary>
+        public static string Privacy_Title {
+            get {
+                return ResourceManager.GetString("Privacy_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register here.
+        /// </summary>
+        public static string Register_Here {
+            get {
+                return ResourceManager.GetString("Register_Here", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remember me.
+        /// </summary>
+        public static string Remember_Me {
+            get {
+                return ResourceManager.GetString("Remember_Me", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter {0}..
+        /// </summary>
+        public static string Required {
+            get {
+                return ResourceManager.GetString("Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show more.
+        /// </summary>
+        public static string ShowMore {
+            get {
+                return ResourceManager.GetString("ShowMore", resourceCulture);
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VibeCode.IdentityServer.Data;
 using VibeCode.IdentityServer.Services.Interface;
@@ -23,33 +23,30 @@ namespace VibeCode.IdentityServer.Services
 
         public async Task<HashSet<string>> GetPermissionsAsync(string userId)
         {
-            var permissions = new HashSet<string>();
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new HashSet<string>();
+            }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                return permissions;
-
-            // ROLE PERMISSIONS
-            var roles = await _userManager.GetRolesAsync(user);
-
-            var rolePermissions = await _context.RolePermissions
-                .Where(rp => rp.Role.Name != null && roles.Contains(rp.Role.Name))
-                .Select(rp => rp.Permission.Code)
-                .ToListAsync();
-
-            foreach (var p in rolePermissions)
-                permissions.Add(p);
-
-            // USER PERMISSIONS
-            var userPermissions = await _context.UserPermissions
+            // 1. Direct permissions associated with the user
+            var directPermissions = _context.UserPermissions
                 .Where(up => up.UserId == userId)
-                .Select(up => up.Permission.Code)
+                .Select(up => up.Permission.Code);
+
+            // 2. Indirect permissions associated with the user's roles
+            var rolePermissions = _context.UserRoles
+                .Where(ur => ur.UserId == userId)
+                .Join(_context.RolePermissions,
+                    ur => ur.RoleId,
+                    rp => rp.RoleId,
+                    (ur, rp) => rp.Permission.Code);
+
+            // 3. Union them to load unique permission codes in a single DB query
+            var permissionsList = await directPermissions
+                .Union(rolePermissions)
                 .ToListAsync();
 
-            foreach (var p in userPermissions)
-                permissions.Add(p);
-
-            return permissions;
+            return new HashSet<string>(permissionsList);
         }
 
         public async Task<List<Menu>> GetVisibleMenusAsync(IEnumerable<string> userPermissions)

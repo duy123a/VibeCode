@@ -46,8 +46,6 @@ builder.Services.AddAuthentication(options =>
     var cookieSettings = builder.Configuration.GetSection("CookieSettings").Get<CookieSettings>();
     if (cookieSettings != null)
     {
-        options.LoginPath = cookieSettings.LoginPath;
-        options.LogoutPath = cookieSettings.LogoutPath;
         options.AccessDeniedPath = cookieSettings.AccessDeniedPath;
         options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieSettings.DefaultExpireSeconds);
         options.SlidingExpiration = cookieSettings.SlidingExpiration;
@@ -83,16 +81,11 @@ builder.Services.AddAuthentication(options =>
 
         options.Events = new OpenIdConnectEvents
         {
-            OnAuthenticationFailed = context =>
-            {
-                context.HandleResponse();
-                context.Response.Redirect(oidcSettings.FailureRedirectPath);
-                return Task.CompletedTask;
-            },
             OnRemoteFailure = context =>
             {
-                context.Response.Redirect(oidcSettings.FailureRedirectPath);
+                var errorMessage = context.Failure?.Message;
                 context.HandleResponse();
+                context.Response.Redirect($"{context.Request.PathBase}{oidcSettings.FailureRedirectPath}?message={Uri.EscapeDataString(errorMessage ?? "Unknown error")}");
                 return Task.CompletedTask;
             }
         };
@@ -114,13 +107,20 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+app.UsePathBase("/main");
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseWhen(
+        ctx => !ctx.Request.Path.StartsWithSegments("/api")
+            && !ctx.Request.Path.StartsWithSegments("/connect"),
+        appBuilder =>
+        {
+            appBuilder.UseExceptionHandler("/Home/Error");
+            appBuilder.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+        });
     app.UseHsts();
 }
 
-app.UsePathBase("/main");
 app.UseForwardedHeaders();
 
 app.UseRequestLocalization();
@@ -130,16 +130,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Security headers
-app.Use(async (context, next) =>
-{
-    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-    context.Response.Headers["X-Frame-Options"] = "DENY";
-    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-
-    await next();
-});
 
 app.MapControllerRoute(
     name: "default",
